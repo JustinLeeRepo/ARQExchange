@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		367604772F745BC600A80B6A /* Calculator in Frameworks */ = {isa = PBXBuildFile; productRef = 367604762F745BC600A80B6A /* Calculator */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		367604652F74592B00A80B6A /* ARQExchange.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARQExchange.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		367604732F745B6200A80B6A /* Calculator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Calculator; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				367604772F745BC600A80B6A /* Calculator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32,7 +38,9 @@
 		3676045C2F74592A00A80B6A = {
 			isa = PBXGroup;
 			children = (
+				367604732F745B6200A80B6A /* Calculator */,
 				367604672F74592B00A80B6A /* ARQExchange */,
+				367604752F745BC600A80B6A /* Frameworks */,
 				367604662F74592B00A80B6A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +51,13 @@
 				367604652F74592B00A80B6A /* ARQExchange.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		367604752F745BC600A80B6A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -65,6 +80,7 @@
 			);
 			name = ARQExchange;
 			packageProductDependencies = (
+				367604762F745BC600A80B6A /* Calculator */,
 			);
 			productName = ARQExchange;
 			productReference = 367604652F74592B00A80B6A /* ARQExchange.app */;
@@ -332,6 +348,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		367604762F745BC600A80B6A /* Calculator */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Calculator;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3676045D2F74592A00A80B6A /* Project object */;
 }

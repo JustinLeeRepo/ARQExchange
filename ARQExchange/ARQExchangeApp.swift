@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct ARQExchangeApp: App {
+    @State var coordinator: RootCoordinator = .init()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView(coordinator: coordinator)
         }
     }
 }
