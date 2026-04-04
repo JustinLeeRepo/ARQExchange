@@ -22,12 +22,6 @@ enum ForeignCurrencySelectionEvent {
     case close
 }
 
-//TODO: add passthrough subject that emits event for foreign currency selection
-//      - should fetch rate and update header with selected currency rate and title
-//      - should update foreign currency row with selected currency
-//TODO: add passthroughsubject that emits event for swap button
-//      - should update order of rows
-//      - should update header with buy (bid) / sell (ask) rate
 @Observable
 public class ExchangeViewModel {
     let headerViewModel: ExchangeHeaderViewModel
@@ -44,7 +38,6 @@ public class ExchangeViewModel {
     
     private let currentRateSubject: CurrentValueSubject<Rate?, Never>
     private let foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>
-    private let buySellSwapPublisher: AnyPublisher<BuySellSwapEvent, Never>
     private var cancellables = Set<AnyCancellable>()
     
     private let rateService: RateServicable
@@ -57,14 +50,13 @@ public class ExchangeViewModel {
 
         let buySellSwapEvent: PassthroughSubject<BuySellSwapEvent, Never> = .init()
         let buySellSwapEventPublisher = buySellSwapEvent.eraseToAnyPublisher()
-        buySellSwapPublisher = buySellSwapEventPublisher
         
         let currentRateSubject: CurrentValueSubject<Rate?, Never> = .init(nil)
         let currentRatePublisher = currentRateSubject.eraseToAnyPublisher()
         self.currentRateSubject = currentRateSubject
         
         self.headerViewModel = ExchangeHeaderViewModel(foreignCurrency: Currency.mockSelected, buySellSwapEventPublisher: buySellSwapEventPublisher, foreignCurrencySelectionPublisher: foreignCurrencySelectionPublisher, ratePublisher: currentRatePublisher)
-        self.inputViewModel = ExchangeInputViewModel(buySellSwapEventSubject: buySellSwapEvent, foreignCurrencySelectionSubject: foreignCurrencySelectionEvent, ratePublisher: currentRatePublisher)
+        self.inputViewModel = ExchangeInputViewModel(foreignCurrency: Currency.mockSelected, buySellSwapEventSubject: buySellSwapEvent, foreignCurrencySelectionSubject: foreignCurrencySelectionEvent, ratePublisher: currentRatePublisher)
         self.currencyListViewModel = CurrencyListViewModel(selectedCurrency: Currency.mockSelected, foreignCurrencySelectionSubject: foreignCurrencySelectionEvent)
         
         self.rateService = dependencyContainer.getRateService()
@@ -113,18 +105,6 @@ public class ExchangeViewModel {
     }
     
     private func setupListener() {
-        //fetch buy or sell rate using service
-        buySellSwapPublisher.sink { event in
-            switch event {
-            case .buy:
-                
-                break
-            case .sell:
-                
-                break
-            }
-        }
-        .store(in: &cancellables)
         
         //fetch rate for new currency using service
         foreignCurrencySelectionSubject.sink { [weak self] event in

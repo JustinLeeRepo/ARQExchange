@@ -26,7 +26,7 @@ struct ExchangeInputRowView: View {
             
             Spacer()
             
-            TextField(value: viewModel.amount, format: .currency(code: viewModel.currencyCode)) {}
+            TextField("0", value: viewModel.amount, format: .currency(code: viewModel.currencyCode))
                 .keyboardType(.decimalPad)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.trailing)

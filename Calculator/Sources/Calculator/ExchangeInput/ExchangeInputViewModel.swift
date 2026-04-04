@@ -18,7 +18,7 @@ class ExchangeInputViewModel {
     
     @ObservationIgnored
     lazy var foreignExchangeInputRowViewModel: ExchangeInputRowViewModel = {
-        ExchangeInputRowViewModel(currency: .ars, buySellSwapEventPublisher: buySellSwapEventSubject.eraseToAnyPublisher(), foreignCurrencySelectionSubject: foreignCurrencySelectionSubject, ratePublisher: ratePublisher, binding: foreignBinding)
+        ExchangeInputRowViewModel(currency: self.currency, buySellSwapEventPublisher: buySellSwapEventSubject.eraseToAnyPublisher(), foreignCurrencySelectionSubject: foreignCurrencySelectionSubject, ratePublisher: ratePublisher, binding: foreignBinding)
     }()
     
     var usdBinding: Binding<Double>! {
@@ -44,6 +44,7 @@ class ExchangeInputViewModel {
     private var usdAmount: Double = 0
     private var foreignAmount: Double = 0
     
+    private var currency: Currency
     private var rate: Rate?
     
     private let foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>
@@ -53,15 +54,15 @@ class ExchangeInputViewModel {
     
     var isBuying: Bool = false
     
-    init(
+    init(foreignCurrency: Currency,
         buySellSwapEventSubject: PassthroughSubject<BuySellSwapEvent, Never>,
         foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>,
         ratePublisher: AnyPublisher<Rate?, Never>
     ) {
+        self.currency = foreignCurrency
         self.foreignCurrencySelectionSubject = foreignCurrencySelectionSubject
         self.ratePublisher = ratePublisher
         self.buySellSwapEventSubject = buySellSwapEventSubject
-        let buySellSwapEventPublisher = buySellSwapEventSubject.eraseToAnyPublisher()
         
         setupListener()
     }
@@ -94,6 +95,14 @@ class ExchangeInputViewModel {
     }
     
     private func setupListener() {
+        foreignCurrencySelectionSubject.sink { [weak self] event in
+            guard let self else { return }
+            if case .selected(let currency) = event {
+                self.currency = currency
+            }
+        }
+        .store(in: &cancellables)
+        
         ratePublisher.sink { [weak self] rate in
             guard let self else { return }
             self.rate = rate

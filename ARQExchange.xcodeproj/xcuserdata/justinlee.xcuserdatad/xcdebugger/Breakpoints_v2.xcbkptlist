@@ -30,8 +30,8 @@
             filePath = "Calculator/Sources/Calculator/Exchange/ExchangeViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
             landmarkName = "fetchRates()"
             landmarkType = "7">
          </BreakpointContent>
@@ -50,36 +50,6 @@
             endingLineNumber = "107"
             landmarkName = "decodeData(data:keyDecodingStrategy:dateDecodingStrategy:dataDecodingStrategy:nonConformingFloatDecodingStrategy:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "726628DB-1D25-4D50-828D-981476C2D3DB - 1d1edb57c1f0fba5"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "MilaNetwork.NetworkService.decodeData&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable&gt;(data: Foundation.Data, keyDecodingStrategy: Foundation.JSONDecoder.KeyDecodingStrategy, dateDecodingStrategy: Foundation.JSONDecoder.DateDecodingStrategy, dataDecodingStrategy: Foundation.JSONDecoder.DataDecodingStrategy, nonConformingFloatDecodingStrategy: Foundation.JSONDecoder.NonConformingFloatDecodingStrategy) throws -&gt; &#x3c4;_0_0"
-                  moduleName = "ARQExchange.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/justinlee/Library/Developer/Xcode/DerivedData/ARQExchange-cyxizxejmnqfyoeefdsxvljsuoao/SourcePackages/checkouts/MilaNetwork/Sources/NetworkService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "107"
-                  endingLineNumber = "107">
-               </Location>
-               <Location
-                  uuid = "726628DB-1D25-4D50-828D-981476C2D3DB - 1d1edb57c1f0fba5"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "MilaNetwork.NetworkService.decodeData&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable&gt;(data: Foundation.Data, keyDecodingStrategy: Foundation.JSONDecoder.KeyDecodingStrategy, dateDecodingStrategy: Foundation.JSONDecoder.DateDecodingStrategy, dataDecodingStrategy: Foundation.JSONDecoder.DataDecodingStrategy, nonConformingFloatDecodingStrategy: Foundation.JSONDecoder.NonConformingFloatDecodingStrategy) throws -&gt; &#x3c4;_0_0"
-                  moduleName = "ARQExchange.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/justinlee/Library/Developer/Xcode/DerivedData/ARQExchange-cyxizxejmnqfyoeefdsxvljsuoao/SourcePackages/checkouts/MilaNetwork/Sources/NetworkService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "107"
-                  endingLineNumber = "107">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -92,8 +62,8 @@
             filePath = "Calculator/Sources/Calculator/ExchangeInput/ExchangeInputViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "81"
-            endingLineNumber = "81"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
             landmarkName = "convert(usd:)"
             landmarkType = "7">
          </BreakpointContent>
