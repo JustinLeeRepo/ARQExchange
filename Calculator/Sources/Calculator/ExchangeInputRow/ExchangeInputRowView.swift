@@ -26,7 +26,7 @@ struct ExchangeInputRowView: View {
             
             Spacer()
             
-            TextField("0", value: $viewModel.amount, format: .currency(code: viewModel.currencyCode))
+            TextField(value: viewModel.amount, format: .currency(code: viewModel.currencyCode)) {}
                 .keyboardType(.decimalPad)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.trailing)
@@ -35,9 +35,6 @@ struct ExchangeInputRowView: View {
         .background(.background)
         .clipShape(.rect(cornerRadius: 12.0))
         .padding(.horizontal)
-        .sheet(isPresented: $viewModel.isCurrenncySheetOpen) {
-            CurrencyListView(viewModel: viewModel.currencyListViewModel)
-        }
     }
     
     private var inputLabel: some View {
@@ -59,14 +56,23 @@ struct ExchangeInputRowView: View {
  
 #Preview {
     VStack(spacing: 12) {
-        ExchangeInputRowView(viewModel: ExchangeInputRowViewModel(currency: .usd, amount: 9999, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject()))
+        var value = 0.0
+        let binding = Binding {
+            value
+        } set: { newValue in
+            value = newValue
+        }
+
+        let usdVM = ExchangeInputRowViewModel(currency: .usd, amount: 9999, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher(), binding: binding)
+//        let brlVM = ExchangeInputRowViewModel(currency: .brl, amount: 184075.59, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher(), binding: binding)
+//        let copVM = ExchangeInputRowViewModel(currency: .cop, amount: 500000, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher())
+//        let arsVM = ExchangeInputRowViewModel(currency: .ars, amount: 100000, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher())
+//        let mxnVM = ExchangeInputRowViewModel(currency: .mxn, amount: 2000, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher())
         
-        ExchangeInputRowView(viewModel: ExchangeInputRowViewModel(currency: .brl, amount: 184065.59, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject()))
-        
-        ExchangeInputRowView(viewModel: ExchangeInputRowViewModel(currency: .mxn, amount: 1800, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject()))
-        
-        ExchangeInputRowView(viewModel: ExchangeInputRowViewModel(currency: .cop, amount: 50000, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject()))
-        
-        ExchangeInputRowView(viewModel: ExchangeInputRowViewModel(currency: .ars, amount: 10000, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject()))
+        ExchangeInputRowView(viewModel: usdVM)
+//        ExchangeInputRowView(viewModel: brlVM)
+//        ExchangeInputRowView(viewModel: mxnVM)
+//        ExchangeInputRowView(viewModel: copVM)
+//        ExchangeInputRowView(viewModel: arsVM)
     }
 }

@@ -5,14 +5,16 @@
 //  Created by Justin Lee on 3/25/26.
 //
 
-import SwiftUI
 import Calculator
+import DependencyContainer
+import SwiftUI
 
 @Observable
 class RootCoordinator {
+    private let dependencyContainer: DependencyContainable
     var exchangeViewModel: ExchangeViewModel
-    var isSelectorShown: Bool = false
-    public init() {
-        self.exchangeViewModel = ExchangeViewModel()
+    init(dependencyContainer: DependencyContainable) {
+        self.dependencyContainer = dependencyContainer
+        self.exchangeViewModel = ExchangeViewModel(dependencyContainer: dependencyContainer)
     }
 }

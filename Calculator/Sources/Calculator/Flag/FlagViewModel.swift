@@ -6,11 +6,12 @@
 //
 
 import Combine
+import Models
 import SwiftUI
 
 @Observable
 class FlagViewModel {
-    let foreignCurrencySelectionPublisher: AnyPublisher<Currency, Never>?
+    let foreignCurrencySelectionPublisher: AnyPublisher<ForeignCurrencySelectionEvent, Never>?
     var cancellables = Set<AnyCancellable>()
     
     var currency: Currency
@@ -21,7 +22,7 @@ class FlagViewModel {
     
     init(
         currency: Currency,
-        foreignCurrencySelectionPublisher: AnyPublisher<Currency, Never>? = nil
+        foreignCurrencySelectionPublisher: AnyPublisher<ForeignCurrencySelectionEvent, Never>? = nil
     ) {
         self.currency = currency
         self.foreignCurrencySelectionPublisher = foreignCurrencySelectionPublisher
@@ -30,8 +31,11 @@ class FlagViewModel {
     
     private func setupListener() {
         guard let publisher = foreignCurrencySelectionPublisher else { return }
-        publisher.sink { event in
-            self.currency = event
+        publisher.sink { [weak self] event in
+            guard let self else { return }
+            if case .selected(let currency) = event {
+                self.currency = currency
+            }
         }
         .store(in: &cancellables)
     }

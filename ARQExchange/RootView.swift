@@ -6,6 +6,7 @@
 //
 
 import Calculator
+import DependencyContainer
 import SwiftUI
 
 struct RootView: View {
@@ -13,12 +14,9 @@ struct RootView: View {
     
     var body: some View {
         ExchangeView(viewModel: coordinator.exchangeViewModel)
-            .sheet(isPresented: $coordinator.isSelectorShown) {
-                Text("currency picker")
-            }
     }
 }
 
 #Preview {
-    RootView(coordinator: RootCoordinator())
+    RootView(coordinator: RootCoordinator(dependencyContainer: MockDependencyContainer()))
 }

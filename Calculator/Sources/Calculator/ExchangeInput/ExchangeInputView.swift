@@ -64,5 +64,5 @@ struct SwapButton: View {
 }
 
 #Preview {
-    ExchangeInputView(viewModel: ExchangeInputViewModel(buySellSwapEventSubject: PassthroughSubject(), foreignCurrencySelectionSubject: PassthroughSubject()))
+    ExchangeInputView(viewModel: ExchangeInputViewModel(buySellSwapEventSubject: PassthroughSubject(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher()))
 }

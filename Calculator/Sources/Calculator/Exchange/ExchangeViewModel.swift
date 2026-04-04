@@ -6,11 +6,20 @@
 //
 
 import Combine
+import DependencyContainer
+import Models
+import Service
 import SwiftUI
 
 enum BuySellSwapEvent {
     case sell
     case buy
+}
+
+enum ForeignCurrencySelectionEvent {
+    case selected(Currency)
+    case open
+    case close
 }
 
 //TODO: add passthrough subject that emits event for foreign currency selection
@@ -23,27 +32,84 @@ enum BuySellSwapEvent {
 public class ExchangeViewModel {
     let headerViewModel: ExchangeHeaderViewModel
     let inputViewModel: ExchangeInputViewModel
+    var currencyListViewModel: CurrencyListViewModel
     
-    var isShowingSheet: Bool = false
+    private var currencies: [Currency] = Currency.mockList
+    private var selectedCurrency: Currency = Currency.mockList[0]
+    private var rates: [Currency: Rate] = Rate.mockDict
     
-    let foreignCurrencySelectionPublisher: AnyPublisher<Currency, Never>
-    let buySellSwapPublisher: AnyPublisher<BuySellSwapEvent, Never>
-    var cancellables = Set<AnyCancellable>()
+    var isCurrencySheetOpen = false
+    var isLoading = false
+    var error: Error?
     
-    public init() {
-        let foreignCurrencySelectionEvent: PassthroughSubject<Currency, Never> = .init()
-        let buySellSwapEvent: PassthroughSubject<BuySellSwapEvent, Never> = .init()
-        
-        let buySellSwapEventPublisher = buySellSwapEvent.eraseToAnyPublisher()
+    private let currentRateSubject: CurrentValueSubject<Rate?, Never>
+    private let foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>
+    private let buySellSwapPublisher: AnyPublisher<BuySellSwapEvent, Never>
+    private var cancellables = Set<AnyCancellable>()
+    
+    private let rateService: RateServicable
+    private let currencyService: CurrencyServicable
+    
+    public init(dependencyContainer: DependencyContainable) {
+        let foreignCurrencySelectionEvent: PassthroughSubject<ForeignCurrencySelectionEvent, Never> = .init()
         let foreignCurrencySelectionPublisher = foreignCurrencySelectionEvent.eraseToAnyPublisher()
-        
+        self.foreignCurrencySelectionSubject = foreignCurrencySelectionEvent
+
+        let buySellSwapEvent: PassthroughSubject<BuySellSwapEvent, Never> = .init()
+        let buySellSwapEventPublisher = buySellSwapEvent.eraseToAnyPublisher()
         buySellSwapPublisher = buySellSwapEventPublisher
-        self.foreignCurrencySelectionPublisher = foreignCurrencySelectionPublisher
         
-        self.headerViewModel = ExchangeHeaderViewModel(buySellSwapEventPublisher: buySellSwapEventPublisher, foreignCurrencySelectionPublisher: foreignCurrencySelectionPublisher)
-        self.inputViewModel = ExchangeInputViewModel(buySellSwapEventSubject: buySellSwapEvent, foreignCurrencySelectionSubject: foreignCurrencySelectionEvent)
+        let currentRateSubject: CurrentValueSubject<Rate?, Never> = .init(nil)
+        let currentRatePublisher = currentRateSubject.eraseToAnyPublisher()
+        self.currentRateSubject = currentRateSubject
+        
+        self.headerViewModel = ExchangeHeaderViewModel(foreignCurrency: Currency.mockSelected, buySellSwapEventPublisher: buySellSwapEventPublisher, foreignCurrencySelectionPublisher: foreignCurrencySelectionPublisher, ratePublisher: currentRatePublisher)
+        self.inputViewModel = ExchangeInputViewModel(buySellSwapEventSubject: buySellSwapEvent, foreignCurrencySelectionSubject: foreignCurrencySelectionEvent, ratePublisher: currentRatePublisher)
+        self.currencyListViewModel = CurrencyListViewModel(selectedCurrency: Currency.mockSelected, foreignCurrencySelectionSubject: foreignCurrencySelectionEvent)
+        
+        self.rateService = dependencyContainer.getRateService()
+        self.currencyService = dependencyContainer.getCurrencyService()
         
         setupListener()
+    }
+    
+    func fetchCurrencies() async {
+        isLoading = true
+        
+        do {
+            currencies = try await self.currencyService.fetchCurrencies()
+            selectedCurrency = currencies[0]
+            
+            currencyListViewModel.currencies = currencies
+            self.foreignCurrencySelectionSubject.send(.selected(selectedCurrency))
+            print("currencies fetched \(currencies)")
+        } catch {
+            print("error fetching currencies \(error)")
+            self.error = error
+            isLoading = false
+        }
+        
+        isLoading = false
+    }
+    
+    func fetchRates() async {
+        isLoading = true
+        
+        do {
+            let rates = try await rateService.fetchRates(currency: currencies)
+            self.rates = rates.reduce(into: [Currency: Rate](), { dict, rate in
+                dict[rate.foreignCurrency] = rate
+            })
+            
+            self.currentRateSubject.send(self.rates[self.selectedCurrency])
+            print("rates fetched \(self.rates)")
+        } catch {
+            print("error fetching rates \(error)")
+            self.error = error
+            isLoading = false
+        }
+        
+        isLoading = false
     }
     
     private func setupListener() {
@@ -61,19 +127,21 @@ public class ExchangeViewModel {
         .store(in: &cancellables)
         
         //fetch rate for new currency using service
-        foreignCurrencySelectionPublisher.sink { event in
+        foreignCurrencySelectionSubject.sink { [weak self] event in
+            guard let self else { return }
             switch event {
-            case .ars:
+            case .open:
+                self.isCurrencySheetOpen = true
                 break
-            case .brl:
+                
+            case .close:
+                self.isCurrencySheetOpen = false
                 break
-            case .cop:
-                break
-            case .mxn:
-                break
-            default:
-                //newly added currency to service
-                break
+                
+            case .selected(let currency):
+                self.selectedCurrency = currency
+                self.currentRateSubject.send(self.rates[currency])
+                self.isCurrencySheetOpen = false
             }
         }
         .store(in: &cancellables)

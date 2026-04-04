@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Models
 import SwiftUI
 
 struct ExchangeHeaderView: View {
@@ -30,5 +31,5 @@ struct ExchangeHeaderView: View {
 }
 
 #Preview {
-    ExchangeHeaderView(viewModel: ExchangeHeaderViewModel(buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionPublisher: PassthroughSubject().eraseToAnyPublisher()))
+    ExchangeHeaderView(viewModel: ExchangeHeaderViewModel(foreignCurrency: Currency.mockSelected, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionPublisher: PassthroughSubject().eraseToAnyPublisher(), ratePublisher: PassthroughSubject().eraseToAnyPublisher()))
 }

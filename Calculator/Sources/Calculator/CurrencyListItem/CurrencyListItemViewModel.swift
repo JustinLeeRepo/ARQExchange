@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Models
 import SwiftUI
 
 @Observable
@@ -13,12 +14,12 @@ class CurrencyListItemViewModel {
     let currency: Currency
     var isSelected: Bool
     
-    let foreignCurrencySelectionSubject: PassthroughSubject<Currency, Never>
+    let foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>
     var cancellables = Set<AnyCancellable>()
     
     init(currency: Currency,
          isSelected: Bool = false,
-         foreignCurrencySelectionSubject: PassthroughSubject<Currency, Never>) {
+         foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>) {
         self.currency = currency
         self.isSelected = isSelected
         self.foreignCurrencySelectionSubject = foreignCurrencySelectionSubject
@@ -31,17 +32,14 @@ class CurrencyListItemViewModel {
     }
     
     func selectCurrency() {
-        foreignCurrencySelectionSubject.send(currency)
+        foreignCurrencySelectionSubject.send(.selected(currency))
     }
     
     private func setupListener() {
-        foreignCurrencySelectionSubject.sink { [weak self] currency in
+        foreignCurrencySelectionSubject.sink { [weak self] event in
             guard let self = self else { return }
-            if currency == self.currency {
-                self.isSelected = true
-            }
-            else {
-                self.isSelected = false
+            if case .selected(let currency) = event {
+                self.isSelected = currency == self.currency
             }
         }
         .store(in: &cancellables)

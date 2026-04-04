@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Models
 import SwiftUI
 
 struct CurrencyListView: View {
@@ -20,9 +21,6 @@ struct CurrencyListView: View {
         }
         .presentationDragIndicator(.visible)
         .presentationDetents([.medium])
-        .task {
-            await viewModel.fetchCurrencies()
-        }
     }
     
     var header: some View {

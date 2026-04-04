@@ -4,26 +4,30 @@
 import PackageDescription
 
 let package = Package(
-    name: "Calculator",
+    name: "DependencyContainer",
     platforms: [.iOS(.v17)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "Calculator",
-            targets: ["Calculator"]
+            name: "DependencyContainer",
+            targets: ["DependencyContainer"]
         ),
     ],
     dependencies: [
         .package(path: "Models"),
         .package(path: "Service"),
-        .package(path: "DependencyContainer"),
+        .package(
+            url: "https://github.com/JustinLeeRepo/MilaNetwork",
+            branch: "main"
+        ),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Calculator",
-            dependencies: ["Models", "Service", "DependencyContainer"]
+            name: "DependencyContainer",
+            dependencies: ["Models", "Service", "MilaNetwork"]
         ),
+
     ]
 )

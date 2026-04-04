@@ -6,35 +6,39 @@
 //
 
 import Combine
+import Models
 import SwiftUI
 
 @Observable
 class ExchangeInputRowViewModel {
+    let amount: Binding<Double>
     private var currency: Currency
-    var amount: Double
     let isLocked: Bool
-    var isCurrenncySheetOpen = false
     let flagViewModel: FlagViewModel
-    let currencyListViewModel: CurrencyListViewModel
     
+    private var isBuying = false
+    private var rate: Rate?
+    private let ratePublisher: AnyPublisher<Rate?, Never>
     private let buySellSwapEventPublisher: AnyPublisher<BuySellSwapEvent, Never>
-    private let foreignCurrencySelectionPublisher: AnyPublisher<Currency, Never>
+    private let foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>
     private var cancellables = Set<AnyCancellable>()
+    
     
     init(
         currency: Currency,
         amount: Double = 0.00,
         buySellSwapEventPublisher: AnyPublisher<BuySellSwapEvent, Never>,
-        foreignCurrencySelectionSubject: PassthroughSubject<Currency, Never>
+        foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>,
+        ratePublisher: AnyPublisher<Rate?, Never>,
+        binding: Binding<Double>
     ) {
         self.currency = currency
-        self.amount = amount
         self.isLocked = currency == .usd
-        self.currencyListViewModel = CurrencyListViewModel(selectedCurrency: currency, foreignCurrencySelectionSubject: foreignCurrencySelectionSubject)
         self.buySellSwapEventPublisher = buySellSwapEventPublisher
-        self.foreignCurrencySelectionPublisher = foreignCurrencySelectionSubject.eraseToAnyPublisher()
-        self.flagViewModel = FlagViewModel(currency: currency, foreignCurrencySelectionPublisher: isLocked ? nil : foreignCurrencySelectionPublisher)
-        
+        self.foreignCurrencySelectionSubject = foreignCurrencySelectionSubject
+        self.ratePublisher = ratePublisher
+        self.flagViewModel = FlagViewModel(currency: currency, foreignCurrencySelectionPublisher: isLocked ? nil : foreignCurrencySelectionSubject.eraseToAnyPublisher())
+        self.amount = binding
         setupListener()
     }
     
@@ -42,29 +46,43 @@ class ExchangeInputRowViewModel {
         currency.code
     }
     
-    var amountDisplay: String {
-        if amount == 0 { return isLocked ? "$0" : "" }
-        let prefix = isLocked ? "$" : "$"
-        return "\(prefix)\(amount)"
-    }
+//    var amountDisplay: String {
+//        if amount == 0 { return isLocked ? "$0" : "" }
+//        let prefix = isLocked ? "$" : "$"
+//        return "\(prefix)\(amount)"
+//    }
     
     private func setupListener() {
         if !isLocked {
-            foreignCurrencySelectionPublisher.sink { [weak self] currency in
+            foreignCurrencySelectionSubject.sink { [weak self] currency in
                 guard let self = self else { return }
-                self.currency = currency
-                self.isCurrenncySheetOpen = false
+                if case .selected(let currency) = currency {
+                    self.currency = currency                    
+                }
             }
             .store(in: &cancellables)
         }
         
-        buySellSwapEventPublisher.sink { event in
-            
+        buySellSwapEventPublisher.sink { [weak self] event in
+            guard let self else { return }
+            self.isBuying = event == .buy
+        }
+        .store(in: &cancellables)
+        
+        ratePublisher.sink { [weak self] event in
+            self?.rate = event
         }
         .store(in: &cancellables)
     }
     
     func openCurrencySelectionSheet() {
-        isCurrenncySheetOpen = true
+        foreignCurrencySelectionSubject.send(.open)
+    }
+    
+    func convertedAmount(from usdAmount: Double) -> Double {
+        guard let rate else { return 0 }
+        let rateString = isBuying ? rate.bid : rate.ask
+        guard let rateValue = Double(rateString) else { return 0 }
+        return usdAmount * rateValue
     }
 }

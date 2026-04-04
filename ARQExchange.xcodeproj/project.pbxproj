@@ -8,11 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		367604772F745BC600A80B6A /* Calculator in Frameworks */ = {isa = PBXBuildFile; productRef = 367604762F745BC600A80B6A /* Calculator */; };
+		36B1CA562F7F701900013338 /* MilaNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 36B1CA552F7F701900013338 /* MilaNetwork */; };
+		36FF8BCF2F7F918F0075DF8D /* DependencyContainer in Frameworks */ = {isa = PBXBuildFile; productRef = 36FF8BCE2F7F918F0075DF8D /* DependencyContainer */; };
+		36FF8BD12F7F91940075DF8D /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = 36FF8BD02F7F91940075DF8D /* Models */; };
+		36FF8BD32F7F91980075DF8D /* Service in Frameworks */ = {isa = PBXBuildFile; productRef = 36FF8BD22F7F91980075DF8D /* Service */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		367604652F74592B00A80B6A /* ARQExchange.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARQExchange.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		367604732F745B6200A80B6A /* Calculator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Calculator; sourceTree = "<group>"; };
+		36A1923D2F7F8E7000822736 /* Models */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Models; sourceTree = "<group>"; };
+		36B1CA522F7F6ABD00013338 /* Service */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Service; sourceTree = "<group>"; };
+		36B1CA532F7F6FE000013338 /* DependencyContainer */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DependencyContainer; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -28,7 +35,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36B1CA562F7F701900013338 /* MilaNetwork in Frameworks */,
+				36FF8BCF2F7F918F0075DF8D /* DependencyContainer in Frameworks */,
+				36FF8BD12F7F91940075DF8D /* Models in Frameworks */,
 				367604772F745BC600A80B6A /* Calculator in Frameworks */,
+				36FF8BD32F7F91980075DF8D /* Service in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,6 +49,9 @@
 		3676045C2F74592A00A80B6A = {
 			isa = PBXGroup;
 			children = (
+				36A1923D2F7F8E7000822736 /* Models */,
+				36B1CA532F7F6FE000013338 /* DependencyContainer */,
+				36B1CA522F7F6ABD00013338 /* Service */,
 				367604732F745B6200A80B6A /* Calculator */,
 				367604672F74592B00A80B6A /* ARQExchange */,
 				367604752F745BC600A80B6A /* Frameworks */,
@@ -81,6 +95,10 @@
 			name = ARQExchange;
 			packageProductDependencies = (
 				367604762F745BC600A80B6A /* Calculator */,
+				36B1CA552F7F701900013338 /* MilaNetwork */,
+				36FF8BCE2F7F918F0075DF8D /* DependencyContainer */,
+				36FF8BD02F7F91940075DF8D /* Models */,
+				36FF8BD22F7F91980075DF8D /* Service */,
 			);
 			productName = ARQExchange;
 			productReference = 367604652F74592B00A80B6A /* ARQExchange.app */;
@@ -110,6 +128,9 @@
 			);
 			mainGroup = 3676045C2F74592A00A80B6A;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				36B1CA542F7F701900013338 /* XCRemoteSwiftPackageReference "MilaNetwork" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 367604662F74592B00A80B6A /* Products */;
 			projectDirPath = "";
@@ -349,10 +370,38 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		36B1CA542F7F701900013338 /* XCRemoteSwiftPackageReference "MilaNetwork" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JustinLeeRepo/MilaNetwork";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		367604762F745BC600A80B6A /* Calculator */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Calculator;
+		};
+		36B1CA552F7F701900013338 /* MilaNetwork */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 36B1CA542F7F701900013338 /* XCRemoteSwiftPackageReference "MilaNetwork" */;
+			productName = MilaNetwork;
+		};
+		36FF8BCE2F7F918F0075DF8D /* DependencyContainer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DependencyContainer;
+		};
+		36FF8BD02F7F91940075DF8D /* Models */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Models;
+		};
+		36FF8BD22F7F91980075DF8D /* Service */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Service;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

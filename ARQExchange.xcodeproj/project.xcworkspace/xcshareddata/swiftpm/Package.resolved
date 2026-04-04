@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "milanetwork",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/JustinLeeRepo/MilaNetwork",
+      "state" : {
+        "branch" : "main",
+        "revision" : "02ff57ed48a4c7880c467a8a687a2c641e7c1ec0"
+      }
+    }
+  ],
+  "version" : 2
+}

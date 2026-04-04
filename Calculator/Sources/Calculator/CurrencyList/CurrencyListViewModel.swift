@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Models
 import SwiftUI
 
 //add service to fetch available currencies here
@@ -13,19 +14,14 @@ import SwiftUI
 class CurrencyListViewModel {
     var currencies = [Currency]()
     private var selectedCurrency: Currency
-    private let foreignCurrencySelectionSubject: PassthroughSubject<Currency, Never>
+    private let foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>
     private var cancellables = Set<AnyCancellable>()
     
-    init(selectedCurrency: Currency, foreignCurrencySelectionSubject: PassthroughSubject<Currency, Never>) {
+    init(selectedCurrency: Currency, foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>) {
         self.selectedCurrency = selectedCurrency
         self.foreignCurrencySelectionSubject = foreignCurrencySelectionSubject
         
         setupListener()
-    }
-    
-    //TODO: map the fetched currencies into CurrencyListItemViewModel
-    func fetchCurrencies() async {
-        currencies = [.ars, .brl, .cop, .mxn]
     }
     
     func listItemViewModel(for currency: Currency) -> CurrencyListItemViewModel {
@@ -34,13 +30,15 @@ class CurrencyListViewModel {
     
     func closeSheet() {
         //send currency selected with selectedCurrency
-        foreignCurrencySelectionSubject.send(selectedCurrency)
+        foreignCurrencySelectionSubject.send(.close)
     }
     
     private func setupListener() {
-        foreignCurrencySelectionSubject.sink { [weak self] currency in
+        foreignCurrencySelectionSubject.sink { [weak self] event in
             guard let self = self else { return }
-            self.selectedCurrency = currency
+            if case .selected(let currency) = event {
+                self.selectedCurrency = currency
+            }
         }
         .store(in: &cancellables)
     }

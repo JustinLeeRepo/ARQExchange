@@ -5,10 +5,11 @@
 //  Created by Justin Lee on 3/25/26.
 //
 
+import DependencyContainer
 import SwiftUI
 
 public struct ExchangeView: View {
-    let viewModel: ExchangeViewModel
+    @Bindable var viewModel: ExchangeViewModel
     
     public init(viewModel: ExchangeViewModel) {
         self.viewModel = viewModel
@@ -22,14 +23,21 @@ public struct ExchangeView: View {
             
             Spacer()
         }
+        .redacted(reason: viewModel.isLoading ? .placeholder : [])
         .padding(.top, 44)
         .background(.ultraThickMaterial)
-//        .sheet(isPresented: $viewModel.isShowingSheet) {
-//            Text("YYYYEEEE")
-//        }
+        .sheet(isPresented: $viewModel.isCurrencySheetOpen) {
+            CurrencyListView(viewModel: viewModel.currencyListViewModel)
+        }
+        .task {
+            Task {
+                await viewModel.fetchCurrencies()
+                await viewModel.fetchRates()
+            }
+        }
     }
 }
 
 #Preview {
-    ExchangeView(viewModel: ExchangeViewModel())
+    ExchangeView(viewModel: ExchangeViewModel(dependencyContainer: MockDependencyContainer()))
 }

@@ -5,6 +5,7 @@
 //  Created by Justin Lee on 3/25/26.
 //
 
+import Models
 import SwiftUI
 
 struct FlagView: View {

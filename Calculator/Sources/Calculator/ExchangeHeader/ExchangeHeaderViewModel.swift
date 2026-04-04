@@ -6,45 +6,61 @@
 //
 
 import Combine
+import Models
 import SwiftUI
 
 @Observable
 class ExchangeHeaderViewModel {
-    let buySellSwapEventPublisher: AnyPublisher<BuySellSwapEvent, Never>
-    let foreignCurrencySelectionPublisher: AnyPublisher<Currency, Never>
-    var cancellables = Set<AnyCancellable>()
+    private let buySellSwapEventPublisher: AnyPublisher<BuySellSwapEvent, Never>
+    private let foreignCurrencySelectionPublisher: AnyPublisher<ForeignCurrencySelectionEvent, Never>
+    private let ratePublisher: AnyPublisher<Rate?, Never>
+    private var cancellables = Set<AnyCancellable>()
+    
+    private var isBuying = false
     
     var currency: Currency
-    
-    var rate: String {
-        "1000"
-    }
+    var rate: Rate?
     
     var foreignCurrency: String {
         currency.code
     }
     
     var exchangeRate: String {
-        return "1 USD = \(rate) \(foreignCurrency)"
+        guard let rate else { return "Loading..." }
+        let currentRate = isBuying ? rate.bid : rate.ask
+        return "1 USD = \(currentRate) \(foreignCurrency)"
     }
     
-    init(foreignCurrency: Currency = .mxn, buySellSwapEventPublisher: AnyPublisher<BuySellSwapEvent, Never>, foreignCurrencySelectionPublisher: AnyPublisher<Currency, Never>) {
+    init(foreignCurrency: Currency, buySellSwapEventPublisher: AnyPublisher<BuySellSwapEvent, Never>, foreignCurrencySelectionPublisher: AnyPublisher<ForeignCurrencySelectionEvent, Never>, ratePublisher: AnyPublisher<Rate?, Never>) {
         self.currency = foreignCurrency
         self.buySellSwapEventPublisher = buySellSwapEventPublisher
         self.foreignCurrencySelectionPublisher = foreignCurrencySelectionPublisher
+        self.ratePublisher = ratePublisher
         
         setupListener()
     }
     
     private func setupListener() {
-        buySellSwapEventPublisher.sink { event in
-            
+        ratePublisher.sink { [weak self] event in
+            guard let self else { return }
+            Task { @MainActor in
+                self.rate = event
+            }
         }
         .store(in: &cancellables)
         
-        foreignCurrencySelectionPublisher.sink { event in
-            Task { @MainActor in
-                self.currency = event
+        buySellSwapEventPublisher.sink { [weak self] event in
+            guard let self else { return }
+            self.isBuying = event == .buy
+        }
+        .store(in: &cancellables)
+        
+        foreignCurrencySelectionPublisher.sink { [weak self] event in
+            guard let self else { return }
+            if case .selected(let currency) = event {
+                Task { @MainActor in
+                    self.currency = currency
+                }
             }
         }
         .store(in: &cancellables)
