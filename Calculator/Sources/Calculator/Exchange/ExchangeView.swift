@@ -30,10 +30,8 @@ public struct ExchangeView: View {
             CurrencyListView(viewModel: viewModel.currencyListViewModel)
         }
         .task {
-            Task {
-                await viewModel.fetchCurrencies()
-                await viewModel.fetchRates()
-            }
+            await viewModel.fetchCurrencies()
+            await viewModel.fetchRates()
         }
     }
 }
