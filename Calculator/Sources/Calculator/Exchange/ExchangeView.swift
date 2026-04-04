@@ -22,6 +22,14 @@ public struct ExchangeView: View {
             ExchangeInputView(viewModel: viewModel.inputViewModel)
             
             Spacer()
+            
+            if let error = viewModel.error {
+                Text(error.localizedDescription)
+                    .padding()
+                    .font(.caption)
+                    .foregroundStyle(.pink)
+                    .opacity(viewModel.error == nil ? 0 : 1)
+            }
         }
         .redacted(reason: viewModel.isLoading ? .placeholder : [])
         .padding(.top, 44)

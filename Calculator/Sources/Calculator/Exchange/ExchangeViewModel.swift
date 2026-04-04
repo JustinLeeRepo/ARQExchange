@@ -77,8 +77,7 @@ public class ExchangeViewModel {
             print("currencies fetched \(currencies)")
         } catch {
             print("error fetching currencies \(error)")
-            self.error = error
-            isLoading = false
+            showError(error: error)
         }
         
         isLoading = false
@@ -97,11 +96,25 @@ public class ExchangeViewModel {
             print("rates fetched \(self.rates)")
         } catch {
             print("error fetching rates \(error)")
-            self.error = error
-            isLoading = false
+            showError(error: error)
         }
         
         isLoading = false
+    }
+    
+    private func showError(error: Error) {
+        withAnimation {
+            self.error = error
+            self.isLoading = false
+            
+            Task {
+                try? await Task.sleep(nanoseconds: 3_000_000_000)
+                
+                withAnimation {
+                    self.error = nil
+                }
+            }
+        }
     }
     
     private func setupListener() {
