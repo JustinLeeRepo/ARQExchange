@@ -56,7 +56,7 @@ struct ExchangeInputRowView: View {
  
 #Preview {
     VStack(spacing: 12) {
-        var value = 0.0
+        var value: Double? = 0.0
         let binding = Binding {
             value
         } set: { newValue in

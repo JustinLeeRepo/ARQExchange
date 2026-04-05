@@ -21,22 +21,22 @@ class ExchangeInputViewModel {
         ExchangeInputRowViewModel(currency: self.currency, buySellSwapEventPublisher: buySellSwapEventSubject.eraseToAnyPublisher(), foreignCurrencySelectionSubject: foreignCurrencySelectionSubject, ratePublisher: ratePublisher, binding: foreignBinding)
     }()
     
-    var usdBinding: Binding<Double>! {
+    var usdBinding: Binding<Double?> {
         Binding(
             get: { self.usdAmount },
             set: {
-                self.usdAmount = $0
-                self.foreignAmount = self.convert(usd: $0)
+                self.usdAmount = $0 ?? 0
+                self.foreignAmount = self.convert(usd: $0 ?? 0)
             }
         )
     }
     
-    var foreignBinding: Binding<Double>! {
+    var foreignBinding: Binding<Double?> {
         Binding(
             get: { self.foreignAmount },
             set: {
-                self.foreignAmount = $0
-                self.usdAmount = self.reverseConvert(foreign: $0)
+                self.foreignAmount = $0 ?? 0
+                self.usdAmount = self.reverseConvert(foreign: $0 ?? 0)
             }
         )
     }
@@ -67,23 +67,13 @@ class ExchangeInputViewModel {
         setupListener()
     }
     
-    func usdDidChange(_ newValue: Double) {
-        usdAmount = newValue
-        foreignAmount = convert(usd: newValue)
-    }
-    
-    func foreignDidChange(_ newValue: Double) {
-        foreignAmount = newValue
-        usdAmount = reverseConvert(foreign: newValue)
-    }
-    
     private func convert(usd: Double) -> Double {
         guard let rateValue = rateValue() else { print("no rate fetched"); return 0 }
         return usd * rateValue
     }
     
     private func reverseConvert(foreign: Double) -> Double {
-        guard let rateValue = rateValue() else { print("no rate fetched"); return 0 }
+        guard let rateValue = rateValue() else { print("no rate fetched reverse convert"); return 0 }
         guard rateValue != 0 else { return 0 }
         return foreign / rateValue
     }

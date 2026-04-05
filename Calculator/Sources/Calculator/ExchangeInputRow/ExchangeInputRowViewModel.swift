@@ -11,7 +11,7 @@ import SwiftUI
 
 @Observable
 class ExchangeInputRowViewModel {
-    let amount: Binding<Double>
+    let amount: Binding<Double?>
     private var currency: Currency
     let isLocked: Bool
     let flagViewModel: FlagViewModel
@@ -30,7 +30,7 @@ class ExchangeInputRowViewModel {
         buySellSwapEventPublisher: AnyPublisher<BuySellSwapEvent, Never>,
         foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>,
         ratePublisher: AnyPublisher<Rate?, Never>,
-        binding: Binding<Double>
+        binding: Binding<Double?>
     ) {
         self.currency = currency
         self.isLocked = currency == .usd
