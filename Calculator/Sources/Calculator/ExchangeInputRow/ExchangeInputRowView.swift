@@ -10,6 +10,8 @@ import SwiftUI
  
 struct ExchangeInputRowView: View {
     @Bindable var viewModel: ExchangeInputRowViewModel
+    @FocusState private var focus: Bool
+    
     var body: some View {
         HStack() {
             if viewModel.isLocked {
@@ -27,6 +29,10 @@ struct ExchangeInputRowView: View {
             Spacer()
             
             TextField("0", value: viewModel.amount, format: .currency(code: viewModel.currencyCode))
+                .focused($focus)
+                .onReceive(viewModel.focusDismissPublisher) {
+                    focus = false
+                }
                 .keyboardType(.decimalPad)
                 .fontWeight(.semibold)
                 .multilineTextAlignment(.trailing)
@@ -63,11 +69,11 @@ struct ExchangeInputRowView: View {
             value = newValue
         }
 
-        let usdVM = ExchangeInputRowViewModel(currency: .usd, amount: 9999, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher(), binding: binding)
-//        let brlVM = ExchangeInputRowViewModel(currency: .brl, amount: 184075.59, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher(), binding: binding)
-//        let copVM = ExchangeInputRowViewModel(currency: .cop, amount: 500000, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher())
-//        let arsVM = ExchangeInputRowViewModel(currency: .ars, amount: 100000, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher())
-//        let mxnVM = ExchangeInputRowViewModel(currency: .mxn, amount: 2000, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher())
+        let usdVM = ExchangeInputRowViewModel(currency: .usd, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher(), binding: binding, focusDismissPublisher: PassthroughSubject().eraseToAnyPublisher())
+//        let brlVM = ExchangeInputRowViewModel(currency: .brl, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher(), binding: binding)
+//        let copVM = ExchangeInputRowViewModel(currency: .cop, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher(), binding: binding)
+//        let arsVM = ExchangeInputRowViewModel(currency: .ars, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher(), binding: binding)
+//        let mxnVM = ExchangeInputRowViewModel(currency: .mxn, buySellSwapEventPublisher: PassthroughSubject().eraseToAnyPublisher(), foreignCurrencySelectionSubject: PassthroughSubject(), ratePublisher: PassthroughSubject().eraseToAnyPublisher(), binding: binding)
         
         ExchangeInputRowView(viewModel: usdVM)
 //        ExchangeInputRowView(viewModel: brlVM)

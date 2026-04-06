@@ -33,9 +33,10 @@ public class ExchangeViewModel {
     private var rates: [Currency: Rate] = Rate.mockDict
     
     var isCurrencySheetOpen = false
-    var isLoading = false
+    var isLoading = true
     var error: Error?
     
+    private let focusDismissSubject = PassthroughSubject<Void, Never>()
     private let currentRateSubject: CurrentValueSubject<Rate?, Never>
     private let foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>
     private var cancellables = Set<AnyCancellable>()
@@ -56,13 +57,17 @@ public class ExchangeViewModel {
         self.currentRateSubject = currentRateSubject
         
         self.headerViewModel = ExchangeHeaderViewModel(foreignCurrency: Currency.mockSelected, buySellSwapEventPublisher: buySellSwapEventPublisher, foreignCurrencySelectionPublisher: foreignCurrencySelectionPublisher, ratePublisher: currentRatePublisher)
-        self.inputViewModel = ExchangeInputViewModel(foreignCurrency: Currency.mockSelected, buySellSwapEventSubject: buySellSwapEvent, foreignCurrencySelectionSubject: foreignCurrencySelectionEvent, ratePublisher: currentRatePublisher)
+        self.inputViewModel = ExchangeInputViewModel(foreignCurrency: Currency.mockSelected, buySellSwapEventSubject: buySellSwapEvent, foreignCurrencySelectionSubject: foreignCurrencySelectionEvent, ratePublisher: currentRatePublisher, focusDismissPublisher: focusDismissSubject.eraseToAnyPublisher())
         self.currencyListViewModel = CurrencyListViewModel(selectedCurrency: Currency.mockSelected, foreignCurrencySelectionSubject: foreignCurrencySelectionEvent)
         
         self.rateService = dependencyContainer.getRateService()
         self.currencyService = dependencyContainer.getCurrencyService()
         
         setupListener()
+    }
+    
+    func dismissFocus() {
+        focusDismissSubject.send()
     }
     
     func fetchCurrencies() async {

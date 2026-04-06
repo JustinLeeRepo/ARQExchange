@@ -13,12 +13,12 @@ import SwiftUI
 class ExchangeInputViewModel {
     @ObservationIgnored
     lazy var usdExchangeInputRowViewModel: ExchangeInputRowViewModel = {
-        ExchangeInputRowViewModel(currency: .usd, buySellSwapEventPublisher: buySellSwapEventSubject.eraseToAnyPublisher(), foreignCurrencySelectionSubject: foreignCurrencySelectionSubject, ratePublisher: ratePublisher, binding: usdBinding)
+        ExchangeInputRowViewModel(currency: .usd, buySellSwapEventPublisher: buySellSwapEventSubject.eraseToAnyPublisher(), foreignCurrencySelectionSubject: foreignCurrencySelectionSubject, ratePublisher: ratePublisher, binding: usdBinding, focusDismissPublisher: focusDismissPublisher)
     }()
     
     @ObservationIgnored
     lazy var foreignExchangeInputRowViewModel: ExchangeInputRowViewModel = {
-        ExchangeInputRowViewModel(currency: self.currency, buySellSwapEventPublisher: buySellSwapEventSubject.eraseToAnyPublisher(), foreignCurrencySelectionSubject: foreignCurrencySelectionSubject, ratePublisher: ratePublisher, binding: foreignBinding)
+        ExchangeInputRowViewModel(currency: self.currency, buySellSwapEventPublisher: buySellSwapEventSubject.eraseToAnyPublisher(), foreignCurrencySelectionSubject: foreignCurrencySelectionSubject, ratePublisher: ratePublisher, binding: foreignBinding, focusDismissPublisher: focusDismissPublisher)
     }()
     
     var usdBinding: Binding<Double?> {
@@ -50,19 +50,22 @@ class ExchangeInputViewModel {
     private let foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>
     private let buySellSwapEventSubject: PassthroughSubject<BuySellSwapEvent, Never>
     private let ratePublisher: AnyPublisher<Rate?, Never>
+    private let focusDismissPublisher: AnyPublisher<Void, Never>
     private var cancellables = Set<AnyCancellable>()
     
     var isBuying: Bool = false
     
     init(foreignCurrency: Currency,
-        buySellSwapEventSubject: PassthroughSubject<BuySellSwapEvent, Never>,
-        foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>,
-        ratePublisher: AnyPublisher<Rate?, Never>
+         buySellSwapEventSubject: PassthroughSubject<BuySellSwapEvent, Never>,
+         foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>,
+         ratePublisher: AnyPublisher<Rate?, Never>,
+         focusDismissPublisher: AnyPublisher<Void, Never>
     ) {
         self.currency = foreignCurrency
         self.foreignCurrencySelectionSubject = foreignCurrencySelectionSubject
         self.ratePublisher = ratePublisher
         self.buySellSwapEventSubject = buySellSwapEventSubject
+        self.focusDismissPublisher = focusDismissPublisher
         
         setupListener()
     }

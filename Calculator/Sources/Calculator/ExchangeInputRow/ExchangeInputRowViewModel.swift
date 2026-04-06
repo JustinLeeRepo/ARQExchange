@@ -22,15 +22,15 @@ class ExchangeInputRowViewModel {
     private let buySellSwapEventPublisher: AnyPublisher<BuySellSwapEvent, Never>
     private let foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>
     private var cancellables = Set<AnyCancellable>()
-    
+    let focusDismissPublisher: AnyPublisher<Void, Never>
     
     init(
         currency: Currency,
-        amount: Double = 0.00,
         buySellSwapEventPublisher: AnyPublisher<BuySellSwapEvent, Never>,
         foreignCurrencySelectionSubject: PassthroughSubject<ForeignCurrencySelectionEvent, Never>,
         ratePublisher: AnyPublisher<Rate?, Never>,
-        binding: Binding<Double?>
+        binding: Binding<Double?>,
+        focusDismissPublisher: AnyPublisher<Void, Never>
     ) {
         self.currency = currency
         self.isLocked = currency == .usd
@@ -39,18 +39,13 @@ class ExchangeInputRowViewModel {
         self.ratePublisher = ratePublisher
         self.flagViewModel = FlagViewModel(currency: currency, foreignCurrencySelectionPublisher: isLocked ? nil : foreignCurrencySelectionSubject.eraseToAnyPublisher())
         self.amount = binding
+        self.focusDismissPublisher = focusDismissPublisher
         setupListener()
     }
     
     var currencyCode: String {
         currency.code
     }
-    
-//    var amountDisplay: String {
-//        if amount == 0 { return isLocked ? "$0" : "" }
-//        let prefix = isLocked ? "$" : "$"
-//        return "\(prefix)\(amount)"
-//    }
     
     private func setupListener() {
         if !isLocked {

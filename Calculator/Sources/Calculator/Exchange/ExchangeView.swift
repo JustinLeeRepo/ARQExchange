@@ -41,6 +41,9 @@ public struct ExchangeView: View {
             await viewModel.fetchCurrencies()
             await viewModel.fetchRates()
         }
+        .onTapGesture {
+            viewModel.dismissFocus()
+        }
     }
 }
 
