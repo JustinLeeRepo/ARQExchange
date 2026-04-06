@@ -28,7 +28,7 @@ struct ExchangeInputRowView: View {
             
             Spacer()
             
-            TextField("0", value: viewModel.amount, format: .currency(code: viewModel.currencyCode))
+            TextField("0", value: viewModel.amount, format: .currency(code: viewModel.currencyCode).precision(.fractionLength(0...2)))
                 .focused($focus)
                 .onReceive(viewModel.focusDismissPublisher) {
                     focus = false

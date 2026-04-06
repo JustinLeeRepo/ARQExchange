@@ -16,7 +16,7 @@ enum BuySellSwapEvent {
     case buy
 }
 
-enum ForeignCurrencySelectionEvent {
+enum ForeignCurrencySelectionEvent: Equatable {
     case selected(Currency)
     case open
     case close

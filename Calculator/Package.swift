@@ -25,5 +25,9 @@ let package = Package(
             name: "Calculator",
             dependencies: ["Models", "Service", "DependencyContainer"]
         ),
+        .testTarget(
+            name: "CalculatorTests",
+            dependencies: ["Calculator"]
+        )
     ]
 )

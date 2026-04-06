@@ -39,6 +39,10 @@ extension Rate {
     public static let mockBRRate = Rate(ask: "5.2034880000", bid: "5.1516125000", book: "usdc_brl", date: Date())
     public static let mockCORate = Rate(ask: "3706.2354000000", bid: "3666.0400000000", book: "usdc_cop", date: Date())
     public static let mockMXRate = Rate(ask: "18.4105000000", bid: "18.4069700000", book: "usdc_mxn", date: Date())
+    public static let mockTestRate = mockRate(bid: "1.5", ask: "1.8")
+    public static func mockRate(bid: String, ask: String) -> Rate {
+        return Rate(ask: ask, bid: bid, book: "usdc_cop", date: Date())
+    }
 }
 
 extension Rate {

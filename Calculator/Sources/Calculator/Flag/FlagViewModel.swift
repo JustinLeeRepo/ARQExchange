@@ -12,7 +12,7 @@ import SwiftUI
 @Observable
 class FlagViewModel {
     let foreignCurrencySelectionPublisher: AnyPublisher<ForeignCurrencySelectionEvent, Never>?
-    var cancellables = Set<AnyCancellable>()
+    private var cancellables = Set<AnyCancellable>()
     
     var currency: Currency
     
