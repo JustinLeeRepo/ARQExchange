@@ -57,8 +57,13 @@ public class RateService: RateServicable {
     
     public func fetchRates(currency: [Currency]) async throws -> [Rate] {
         let endpoint = RateEndpoint(foreignCurrency: currency)
-        let response: [Rate] = try await networkService.performRequest(endpoint)
-        return response
+        do {
+            let response: [Rate] = try await networkService.performRequest(endpoint)
+            return response
+        }
+        catch {
+            throw ExchangeError.rateError(error)
+        }
     }
 }
 

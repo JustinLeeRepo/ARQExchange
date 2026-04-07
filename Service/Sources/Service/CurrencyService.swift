@@ -78,8 +78,13 @@ class CurrencyService: CurrencyServicable {
     
     func fetchCurrencies() async throws -> [Currency] {
         let endpoint: CurrencyEndpoint = CurrencyEndpoint()
-        let response: CurrencyResponse = try await networkService.performRequest(endpoint)
-        return response.currencies
+        do {
+            let response: CurrencyResponse = try await networkService.performRequest(endpoint)
+            return response.currencies
+        }
+        catch {
+            throw ExchangeError.currencyError(error)
+        }
     }
 }
 

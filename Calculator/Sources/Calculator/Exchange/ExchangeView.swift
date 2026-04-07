@@ -38,8 +38,7 @@ public struct ExchangeView: View {
             CurrencyListView(viewModel: viewModel.currencyListViewModel)
         }
         .task {
-            await viewModel.fetchCurrencies()
-            await viewModel.fetchRates()
+            await viewModel.fetchExchangeInfo()
         }
         .onTapGesture {
             viewModel.dismissFocus()

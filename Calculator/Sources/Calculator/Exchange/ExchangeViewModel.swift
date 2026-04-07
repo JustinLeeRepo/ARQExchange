@@ -70,9 +70,14 @@ public class ExchangeViewModel {
         focusDismissSubject.send()
     }
     
-    func fetchCurrencies() async {
+    func fetchExchangeInfo() async {
         isLoading = true
-        
+        await fetchCurrencies()
+        await fetchRates()
+        isLoading = false
+    }
+    
+    private func fetchCurrencies() async {
         do {
             currencies = try await self.currencyService.fetchCurrencies()
             selectedCurrency = currencies[0]
@@ -84,13 +89,9 @@ public class ExchangeViewModel {
             print("error fetching currencies \(error)")
             showError(error: error)
         }
-        
-        isLoading = false
     }
     
-    func fetchRates() async {
-        isLoading = true
-        
+    private func fetchRates() async {
         do {
             let rates = try await rateService.fetchRates(currency: currencies)
             self.rates = rates.reduce(into: [Currency: Rate](), { dict, rate in
@@ -103,8 +104,6 @@ public class ExchangeViewModel {
             print("error fetching rates \(error)")
             showError(error: error)
         }
-        
-        isLoading = false
     }
     
     private func showError(error: Error) {
